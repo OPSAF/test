@@ -2,13 +2,21 @@ import streamlit as st
 import random
 import time
 
+# 侧边栏 - 难度
+st.sidebar.title("游戏设置")
+
+difficulty = st.sidebar.radio("难度级别", ["简单", "中等", "困难"])
+
 def initialize_game():
     """初始化游戏状态"""
     if 'game_state' not in st.session_state:
         # 创建卡片对（使用表情符号和数字组合）
-        symbols = ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', 
-                  '🐨', '🐯', '🦁', '🐮', '🐷', '🐸', '🐵', '🐔']
-        cards = symbols[:8] * 2  # 8对卡片
+        symbols = ['🛐', '⚛️', '✡️', '☸️', '☯️', '✝️', '☦️', '☪️', 
+                  '🕎', '🔯', '🪯', '☮️', '🕉️']
+        # 根据难度调整噪声
+        level = {"简单": 4, "中等": 8, "困难": 13}[difficulty]
+        
+        cards = symbols[:level] * 2  #
         random.shuffle(cards)
         
         st.session_state.game_state = {
@@ -23,6 +31,7 @@ def initialize_game():
             'start_time': None,
             'game_over': False
         }
+
 
 def flip_card(card_index):
     """翻转卡片"""
@@ -104,7 +113,7 @@ def display_card(card_index, symbol):
 
 def main():
     st.set_page_config(
-        page_title="记忆翻牌游戏",
+        page_title="翻牌测试游戏",
         page_icon="🎮",
         layout="wide"
     )
@@ -142,17 +151,13 @@ def main():
     # 游戏说明
     with st.expander("📋 游戏说明", expanded=True):
         st.markdown("""
-        **游戏规则：**
+        游戏规则：
         - 找到所有匹配的卡片对
         - 每次翻开两张卡片
         - 如果匹配，卡片保持翻开状态
         - 如果不匹配，卡片会自动翻回
         - 用最少的步数完成所有匹配！
         
-        **教育意义：**
-        - 锻炼短期记忆能力
-        - 提高注意力和观察力
-        - 培养策略思维
         """)
     
     state = st.session_state.game_state
@@ -205,7 +210,7 @@ def main():
     
     # 处理卡片翻转延迟
     if st.session_state.get('wait_for_flip', False):
-        time.sleep(1)  # 显示1秒后翻回
+        time.sleep(0.5)  # 显示0.5秒后翻回
         reset_cards()
         st.rerun()
     
